@@ -1,6 +1,10 @@
 import {useContext} from "react";
 import {CurrentUserContext} from "../../contexts/CurrentUserContext";
-import Card from "../Card/Card";
+import Promo from "../Promo/Promo";
+import AboutProject from "../AboutProject/AboutProject";
+import Techs from "../Techs/Techs";
+import AboutMe from "../AboutMe/AboutMe";
+import Portfolio from "../Portfolio/Portfolio";
 
 function Main({
   onEditAvatar,
@@ -14,8 +18,13 @@ function Main({
   const currentUser = useContext(CurrentUserContext);
 
   return (
-    <main className="page__content">
-      <section className="profile">
+    <>
+      <Promo></Promo>
+      <AboutProject></AboutProject>
+      <Techs></Techs>
+      <AboutMe></AboutMe>
+      <Portfolio></Portfolio>
+      {/* <section className="profile">
         <div className="profile__avatar-container">
           <img
             className="profile__avatar"
@@ -47,8 +56,8 @@ function Main({
             onCardDelete={onCardDelete}
           />
         ))}
-      </section>
-    </main>
+      </section> */}
+    </>
   );
 }
 

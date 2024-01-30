@@ -1,68 +1,117 @@
-import {Link} from "react-router-dom";
 import headerLogo from "../../images/logo.svg";
 import headerBtn from "../../images/header-interactive-btn.svg";
-import closeBtn from "../../images/close-icon.svg";
-import {useLocation} from "react-router-dom";
+import headerIcon from "../../images/icon.svg";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-function Header({userEmail, signOut, onInteractiveBtnClick, isOpen}) {
+function Header(props) {
   const usePathname = () => {
     const location = useLocation();
     return location.pathname;
   };
 
+  const navigate = useNavigate();
+
+  const [isLogged, setIsLogged] = useState(true);
+
   const currentPath = usePathname();
 
-  const onSignOut = () => {
-    signOut();
+  const handleLoginClick = () => {
+    navigate("signin");
   };
+
+  const handleRegisterClick = () => {
+    navigate("signup");
+  };
+
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
+  function handleBurgerMenuClick() {
+    props.onBurgerMenuClick();
+  }
 
   return (
     <>
-      {isOpen && currentPath === "/" && (
-        <div className="header__opening-container">
-          <h2 className="header__user">{userEmail}</h2>
-          <button
-            onClick={onSignOut}
-            className="header__link header__button"
-            to="/sign-in">
-            Выйти
-          </button>
-        </div>
-      )}
-      <header className="header">
-        <div className="header__container">
-          <img className="header__logo" src={headerLogo} alt="логотип" />
-          {currentPath === "/sign-in" && (
-            <Link className="header__link" to="/sign-up">
-              Регистрация
-            </Link>
-          )}
-          {currentPath === "/sign-up" && (
-            <Link className="header__link" to="/sign-in">
-              Войти
-            </Link>
-          )}
-          {currentPath === "/" && (
-            <>
-              <div className="header__user-container">
-                <h2 className="header__user">{userEmail}</h2>
+      {(currentPath === "/" ||
+        currentPath === "/movies" ||
+        currentPath === "/saved-movies" ||
+        currentPath === "/profile") && (
+        <header
+          className={currentPath === "/" ? "header header__promo" : "header"}
+        >
+          <div className="header__container">
+            <img
+              onClick={handleLogoClick}
+              className="header__logo"
+              src={headerLogo}
+              alt="логотип"
+            />
+            {isLogged && (
+              <div className="header__links">
+                <Link className="header__link" to="/movies">
+                  Фильмы
+                </Link>
+                <Link className="header__link" to="/saved-movies">
+                  Сохранённые фильмы
+                </Link>
+              </div>
+            )}
+            {isLogged ? (
+              <div
+                className={
+                  currentPath === "/"
+                    ? "header__user-container header__promo"
+                    : "header__user-container"
+                }
+              >
+                <Link className="header__link header__button" to="/profile">
+                  Аккаунт
+                  <div
+                    className={
+                      currentPath === "/"
+                        ? "header__icon-container header__icon-promo"
+                        : "header__icon-container"
+                    }
+                  >
+                    <img
+                      className="header__icon"
+                      src={headerIcon}
+                      alt="иконка профиля"
+                    />
+                  </div>
+                </Link>
+              </div>
+            ) : (
+              <div className="header__buttons-container">
                 <button
-                  onClick={onSignOut}
-                  className="header__link header__button"
-                  to="/sign-in">
-                  Выйти
+                  onClick={handleRegisterClick}
+                  type="button"
+                  className="header__signup-btn"
+                >
+                  Регистрация
+                </button>
+                <button
+                  onClick={handleLoginClick}
+                  type="button"
+                  className="header__signin-btn"
+                >
+                  Войти
                 </button>
               </div>
+            )}
+            {isLogged && (
               <img
-                onClick={onInteractiveBtnClick}
-                className="header__interactive-button"
-                src={!isOpen ? headerBtn : closeBtn}
+                onClick={handleBurgerMenuClick}
+                className="header__burger-menu"
+                src={headerBtn}
                 alt="кнопка"
               />
-            </>
-          )}
-        </div>
-      </header>
+            )}
+          </div>
+        </header>
+      )}
     </>
   );
 }
