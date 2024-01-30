@@ -1,0 +1,40 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  padding: 100px 70px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.main-container__title {
+  margin: 0;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #DADADA;
+  font-weight: 400;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.88px;
+}
+
+@media screen and (max-width:769px) {
+  .main-container {
+    padding: 90px 50px;
+  }
+}
+
+@media screen and (max-width:425px) {
+  .main-container {
+    padding: 70px 18px;
+  }
+
+  .main-container__aboutme {
+    padding: 70px 14px;
+  }
+
+  .main-container__title {
+    font-size: 18px;
+    letter-spacing: -0.72px;
+    padding-bottom: 28px;
+  }
+}

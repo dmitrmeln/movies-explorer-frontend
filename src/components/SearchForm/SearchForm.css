@@ -1,0 +1,123 @@
+.search-form {
+  display: flex;
+  background-color: #202020;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.search-form__container {
+  display: flex;
+  background-color: #2F2F2F;
+  margin: 70px 70px 69px;
+  width: 100%;
+  min-height: 72px;
+  align-items: center;
+  border-radius: 9px;
+}
+
+.search-form__button {
+  margin-left: 21px;
+  min-width: 58.65px;
+  height: 34px;
+  padding: 0;
+  border-radius: 48px;
+  background-color: #4285F4;
+  color: #FFF;
+  text-align: center;
+  font-feature-settings: 'clig' off, 'liga' off;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  border: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.search-form__button:hover {
+  opacity: 0.8;
+}
+
+.search-form__input-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 30px 0 19px;
+  width: 100%;
+  min-height: 72px;
+  align-items: center;
+}
+
+
+.search-form__input {
+  width: 100%;
+  margin-left: 10px;
+  padding: 0;
+  color: #8B8B8B;
+  font-feature-settings: 'clig' off, 'liga' off;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 20px;
+  border: 0;
+  background: none;
+}
+
+.search-form__input:focus {
+  outline: none;
+}
+
+.search-form__icon {
+  width: 34px;
+  height: 34px;
+}
+
+@media screen and (max-width:769px) {
+  .search-form__container {
+    margin: 80px 30px 109px;
+  }
+
+  .search-form__input-container {
+    margin: 0 19px 0;
+  }
+}
+
+@media screen and (max-width:600px) {
+  .search-form {
+    display: flex;
+    background-color: #202020;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .search-form__container {
+    flex-direction: column;
+    background: none;
+    margin: 80px 30px 43px;
+  }
+
+  .search-form__input-container {
+    background-color: #2F2F2F;
+    border-radius: 9px;
+    padding: 0 19px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .search-form__icon {
+    display: none;
+  }
+
+  .search-form__input {
+    margin-left: 0px;
+  }
+
+}
+
+@media screen and (max-width:425px) {
+  .search-form__container {
+    width: 93.75%;
+    margin: 80px 0 43px;
+  }
+
+  .search-form__input {
+    font-size: 14px;
+  }
+}

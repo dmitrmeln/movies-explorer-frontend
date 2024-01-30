@@ -1,0 +1,113 @@
+.techs {
+  display: flex;
+  flex-direction: column;
+  background-color: #272727;
+}
+
+.techs__text-container {
+  margin: 90px auto 0;
+}
+
+.techs__text-title {
+  margin: 0;
+  text-align: center;
+  font-size: 50px;
+  font-weight: 400;
+  line-height: 58px;
+  letter-spacing: -2px;
+}
+
+.techs__text-subtitle {
+  margin: 26px auto 0;
+  max-width: 460px;
+  color: #FFF;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.56px;
+}
+
+.techs__grid-items {
+  display: grid;
+  list-style-type: none;
+  padding: 0;
+  margin: 100px auto 0;
+  max-width: 100%;
+  grid-template-columns: repeat(auto-fit, 90px);
+  grid-template-rows: repeat(auto-fit, 60px);
+  gap: 10px;
+}
+
+.techs__grid-item {
+  padding: 21px 0;
+  text-align: center;
+  align-self: center;
+  border-radius: 10px;
+  background-color: #303030;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.48px;
+}
+
+@media screen and (max-width:769px) {
+  .techs__text-container {
+    margin: 80px auto 0;
+  }
+
+  .techs__text-subtitle {
+    margin: 22px auto 0;
+    font-size: 12px;
+    line-height: 18px;
+    letter-spacing: -0.48px;
+  }
+
+  .techs__grid-items {
+    grid-template-columns: repeat(auto-fit, 84px);
+    grid-template-rows: repeat(auto-fit, 57px);
+    margin: 83px auto 0;
+  }
+
+  .techs__grid-item {
+    background-color: #303030;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width:425px) {
+  .techs {
+    background-color: #202020;
+  }
+
+  .techs__text-container {
+    margin: 60px auto 0;
+  }
+
+  .techs__text-title {
+    font-size: 30px;
+    line-height: normal;
+    letter-spacing: -1.2px;
+  }
+
+  .techs__text-subtitle {
+    margin: 24px auto 0;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: -0.44px;
+    max-width: 292px;
+  }
+
+  .techs__grid-items {
+    grid-template-columns: repeat(auto-fit, 84px);
+    grid-template-rows: repeat(auto-fit, 57px);
+    padding: 0 15px;
+    margin: 50px auto 0;
+    box-sizing: border-box;
+  }
+
+  .techs__grid-item {
+    background-color: #303030;
+    font-size: 12px;
+  }
+}

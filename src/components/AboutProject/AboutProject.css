@@ -1,0 +1,146 @@
+.aboutproject {
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #202020;
+}
+
+.aboutproject__text {
+  margin-top: 70px;
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  grid-auto-flow: column;
+  column-gap: 20px;
+  row-gap: 26px;
+}
+
+.aboutproject__paragraph-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.8px;
+}
+
+.aboutproject__paragraph {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.aboutproject__time {
+  margin-top: 110px;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: auto auto;
+  grid-auto-flow: column;
+  row-gap: 14px;
+}
+
+.aboutproject__time-text {
+  padding: 10px 0;
+  margin: 0 auto;
+  width: 100%;
+  background-color: #303030;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.aboutproject__time-subtext {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #8B8B8B;
+  font-weight: 500;
+  line-height: 17px;
+}
+
+.aboutproject__time-text_green {
+  color: #000;
+  background-color: #3DDC84;
+}
+
+
+@media screen and (max-width:769px) {
+  .aboutproject {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #202020;
+  }
+
+  .aboutproject__text {
+    column-gap: 30px;
+    row-gap: 22px;
+  }
+
+  .aboutproject__paragraph-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.8px;
+  }
+
+  .aboutproject__paragraph {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .aboutproject__time {
+    margin-top: 93px;
+    grid-template-columns: 1.06fr 4fr;
+  }
+
+  .aboutproject__time-subtext {
+    font-weight: 400;
+  }
+
+}
+
+@media screen and (max-width:425px) {
+  .aboutproject__text {
+    display: flex;
+    flex-direction: column;
+    margin-top: 62px;
+    column-gap: 0px;
+    row-gap: 0px;
+  }
+
+  .aboutproject__paragraph-title {
+    font-size: 18px;
+    letter-spacing: -0.72px;
+  }
+
+  .aboutproject__paragraph-title:last-of-type {
+    margin-top: 58px;
+  }
+
+  .aboutproject__paragraph {
+    margin-top: 16px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .aboutproject__time {
+    margin-top: 60px;
+    row-gap: 10px;
+    grid-template-columns: 1.1fr 2fr;
+  }
+
+  .aboutproject__time-text {
+    font-size: 11px;
+    padding: 11px 0;
+  }
+
+  .aboutproject__time-subtext {
+    font-size: 11px;
+    line-height: normal;
+  }
+}
