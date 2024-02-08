@@ -1,22 +1,8 @@
 import Auth from "../Auth/Auth";
 
 export default function Register(props) {
-  function handleSubmit(evt) {
-    evt.preventDefault();
-
-    // props
-    //   .onSubmit({
-    //     email,
-    //     name,
-    //     password
-    //   })
-    //   .then(() => {
-    //     setEmail("");
-    //     setName("");
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   })
+  function handleSubmit({email, password}) {
+    props.onSubmit({email, password})
   }
 
   return (
@@ -26,7 +12,8 @@ export default function Register(props) {
       bottomText="Ещё не зарегистрированы?"
       bottomLink="Регистрация"
       linkTo="/signup"
-      handleSubmit={handleSubmit}
+      onSubmit={handleSubmit}
+      errorMessage={props.errorMessage}
     />
   );
 }

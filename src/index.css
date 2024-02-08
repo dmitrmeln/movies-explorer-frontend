@@ -21,14 +21,3 @@
 @import url(./components/Preloader/Preloader.css);
 @import url(./components/MenuPopup/MenuPopup.css);
 @import url(./components/MainContainer/MainContainer.css);
-
-/* @import url(./blocks/authorize/authorize.css);
-@import url(./blocks/authorize/__form/authorize__form.css);
-@import url(./blocks/authorize/__heading/authorize__heading.css);
-@import url(./blocks/authorize/__input/authorize__input.css);
-@import url(./blocks/authorize/__input/_type/authorize__input_type_error.css);
-@import url(./blocks/authorize/__error/authorize__error.css);
-@import url(./blocks/authorize/__error/_visible/authorize__error_visible.css);
-@import url(./blocks/authorize/__button/authorize__button.css);
-@import url(./blocks/authorize/__button/_disabled/authorize__button_disabled.css);
-@import url(./blocks/authorize/__login-link/authorize__login-link.css); */

@@ -1,22 +1,10 @@
-import { useState } from "react";
-// import {CurrentUserContext} from "../../contexts/CurrentUserContext";
-import moviesCardPic from "../../images/movies-card-pic.png";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { BEAT_FILM_MOVIES_API_URL } from "../../utils/config";
 
-export default function MoviesCard() {
-  // const currentUser = useContext(CurrentUserContext);
-
-  const [isLiked, setIsLiked] = useState(false);
-  // const isOwn = card.owner === currentUser._id;
-  // const isLiked = card.likes.some((i) => i === currentUser._id);
-  // const cardLikeButtonClassName = `card__like ${
-  //   isLiked && "card__like_active"
-  // }`;
-
-  // function handleClick() {
-  //   onCardClick(card);
-  // }
-
+export default function MoviesCard({ movie, onMovieLike, onMovieDelete }) {
+  const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
+  const [likeState, setLikeState] = useState(false);
   const usePathname = () => {
     const location = useLocation();
     return location.pathname;
@@ -24,48 +12,78 @@ export default function MoviesCard() {
 
   const currentPath = usePathname();
 
-  function handleLikeClick() {
-    if (!isLiked) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
+  useEffect(() => {
+    if (likedMovies) {
+      const isLiked = likedMovies.some((i) => i.movieId === movie.id);
+      setLikeState(isLiked);
     }
+  }, []);
+
+  function handleLikeClick() {
+    if (!likeState) {
+      setLikeState(true);
+    } else {
+      setLikeState(false);
+    }
+
+    onMovieLike(movie);
   }
 
-  function handleDeleteClick() {
-    // onCardDelete(card);
+  function handleMovieDelete() {
+    if (!likeState) {
+      setLikeState(true);
+    } else {
+      setLikeState(false);
+    }
+    onMovieDelete(movie);
+  }
+
+  function handleMovieClick() {
+    window.open(movie.trailerLink, "_blank");
+  }
+
+  function convertToTime(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    return hours + "ч " + remainingMinutes + "м";
   }
 
   return (
     <article className="movies-card">
       <img
-        src={moviesCardPic}
+        src={
+          currentPath === "/movies"
+            ? BEAT_FILM_MOVIES_API_URL + movie.image.url
+            : movie.image
+        }
+        onClick={handleMovieClick}
         className="movies-card__image"
         alt="карточка"
-        // id={card._id}
+        id={currentPath === "/movies" ? movie.id : movie.movieId}
       />
       <div className="movies-card__container">
-        <h2 className="movies-card__heading">33 слова о дизайне</h2>
+        <h2 className="movies-card__heading">{movie.nameRU}</h2>
         {currentPath === "/movies" && (
           <button
             className={
-              isLiked
+              likeState
                 ? "movies-card__likebtn movies-card__likebtn_active"
                 : "movies-card__likebtn"
             }
             type="button"
-            onClick={handleLikeClick}
+            onClick={!likeState ? handleLikeClick : handleMovieDelete}
           ></button>
         )}
         {currentPath === "/saved-movies" && (
           <button
             type="button"
             className="movies-card__deletebtn"
-            onClick={handleDeleteClick}
+            onClick={handleMovieDelete}
           ></button>
         )}
       </div>
-      <p className="movies-card__duration">1ч 42м</p>
+      <p className="movies-card__duration">{convertToTime(movie.duration)}</p>
     </article>
   );
 }

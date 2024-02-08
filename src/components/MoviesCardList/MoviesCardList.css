@@ -1,12 +1,28 @@
 .movies-cardlist {
   display: flex;
+  min-height: 400px;
   flex-direction: column;
   align-items: center;
   background-color: #202020;
 }
 
+.movies-cardlist__search-text {
+  margin: auto;
+  max-width: 60%;
+  text-align: center;
+  padding: 0;
+  color: white;
+  font-feature-settings: 'clig' off, 'liga' off;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.movies-cardlist__search-text_padding {
+  padding: 140px 0 0;
+}
+
 .movies-cardlist__container {
-  min-height: 410px;
   width: calc(100% - 140px);
   border-top: 1px solid #424242;
   padding: 80px 0 10px;
@@ -19,6 +35,7 @@
 }
 
 .movies-cardlist__morebtn {
+  display: none;
   margin: 50px auto 80px;
   padding: 0;
   width: 320px;
@@ -34,6 +51,10 @@
   font-size: 12px;
   font-weight: 500;
   line-height: normal;
+}
+
+.movies-cardlist__morebtn_active {
+  display: block;
 }
 
 .movies-cardlist__morebtn:hover {

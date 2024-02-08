@@ -1,65 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useFormAndValidation } from "../../hooks/useFormAndValidation";
 import { Link } from "react-router-dom";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 export default function Profile(props) {
-  const { values, handleChange, errors, isValid, setValues, resetForm } =
+  const currentUser = useContext(CurrentUserContext);
+
+  const { values, handleChange, isValid, setValues, errors } =
     useFormAndValidation();
 
-  const [errorMessage, setErrorMessage] = useState("");
   const [isOnEdit, setIsOnEdit] = useState(false);
 
-  const [userName, setUserName] = useState("Дмитрий");
-  const [userEmail, setUserEmail] = useState("pochta@yandex.ru");
-
   useEffect(() => {
-    setValues({ name: userName, email: userEmail });
-  }, []);
+    setValues(currentUser);
+  }, [currentUser, isOnEdit]);
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    const delay = 1500;
 
-    const delay = 500;
+    props.onUpdateUser({
+      name: values.name,
+      email: values.email,
+    });
 
-    // props
-    //   .onSubmit({
-    //     email,
-    //     name,
-    //   })
-    //   .then(() => {
-    //     setEmail("");
-    //     setName("");
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   })
-
-    if (isValid) {
-      setUserName(values.name);
-      setUserEmail(values.email)
-      setErrorMessage("");
-      setTimeout(() => {
-        setIsOnEdit(false);
-      }, delay);
-    } else {
-      setErrorMessage("При обновлении профиля произошла ошибка.");
-      setTimeout(() => {
-        setErrorMessage("");
-        setValues({ name: userName, email: userEmail });
-        setIsOnEdit(false);
-      }, delay);
-    }
+    setTimeout(() => {
+      setIsOnEdit(false);
+    }, delay);
   }
 
   function handleEditClick() {
     setIsOnEdit(true);
   }
 
-  function handleSignOut(evt) {}
+  function handleSignOut() {
+    props.onSignOutClick();
+  }
 
   return (
     <div className="profile">
-      <h1 className="profile__heading">Привет, {userName}!</h1>
+      <h1 className="profile__heading">Привет, {currentUser.name}!</h1>
       <form
         className="profile__form"
         noValidate
@@ -73,13 +53,15 @@ export default function Profile(props) {
           <input
             type="text"
             value={values.name || ""}
+            pattern="^[a-zA-Zа-яА-Я\s\-]*"
             onChange={handleChange}
             className="profile__input"
             id="profile__name"
             name="name"
             minLength="2"
-            maxLength="40"
-            disabled={!isOnEdit? true : false}
+            maxLength="30"
+            disabled={!isOnEdit ? true : false}
+            required
           />
         </div>
         <div className="profile__input-container">
@@ -94,11 +76,24 @@ export default function Profile(props) {
             id="profile__email"
             name="email"
             minLength="2"
-            maxLength="40"
-            disabled={!isOnEdit? true : false}
+            maxLength="20"
+            disabled={!isOnEdit ? true : false}
+            required
           />
         </div>
-        <span className="profile__error">{errorMessage}</span>
+        <span className="profile__value-error">
+          {errors.email ? errors.name : ""}
+        </span>
+        <span
+          className={
+            props.successMessage
+              ? "profile__error profile__success-message"
+              : "profile__error"
+          }
+        >
+          {errors.email ? errors.email : errors.name}
+          {props.successMessage ? props.successMessage : props.errorMessage}
+        </span>
         <div className="profile__buttons">
           {!isOnEdit && (
             <>
@@ -124,9 +119,21 @@ export default function Profile(props) {
             <button
               type="submit"
               className={
-                errorMessage === "" ? "profile__submit-btn" : "profile__submit-btn profile__submit-btn_disabled"
+                isValid &&
+                !props.errorMessage &&
+                (values.name !== currentUser.name ||
+                  values.email !== currentUser.email)
+                  ? "profile__submit-btn"
+                  : "profile__submit-btn profile__submit-btn_disabled"
               }
-              disabled={errorMessage === "" ? false : true}
+              disabled={
+                isValid &&
+                !props.errorMessage &&
+                (values.name !== currentUser.name ||
+                  values.email !== currentUser.email)
+                  ? false
+                  : true
+              }
             >
               Сохранить
             </button>

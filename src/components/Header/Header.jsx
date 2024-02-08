@@ -12,8 +12,6 @@ function Header(props) {
 
   const navigate = useNavigate();
 
-  const [isLogged, setIsLogged] = useState(true);
-
   const currentPath = usePathname();
 
   const handleLoginClick = () => {
@@ -48,7 +46,7 @@ function Header(props) {
               src={headerLogo}
               alt="логотип"
             />
-            {isLogged && (
+            {props.loggedIn && (
               <div className="header__links">
                 <Link className="header__link" to="/movies">
                   Фильмы
@@ -58,7 +56,7 @@ function Header(props) {
                 </Link>
               </div>
             )}
-            {isLogged ? (
+            {props.loggedIn ? (
               <div
                 className={
                   currentPath === "/"
@@ -101,7 +99,7 @@ function Header(props) {
                 </button>
               </div>
             )}
-            {isLogged && (
+            {props.loggedIn && (
               <img
                 onClick={handleBurgerMenuClick}
                 className="header__burger-menu"

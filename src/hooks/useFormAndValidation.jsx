@@ -1,4 +1,4 @@
-import {useState, useCallback} from "react";
+import { useState, useCallback } from "react";
 
 export function useFormAndValidation() {
   const [values, setValues] = useState({});
@@ -6,9 +6,15 @@ export function useFormAndValidation() {
   const [isValid, setIsValid] = useState(true);
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setValues({...values, [name]: value});
-    setErrors({...errors, [name]: e.target.validationMessage});
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+    setErrors({
+      ...errors,
+      [name]:
+        e.target.validationMessage === "Введите данные в указанном формате."
+          ? "Пожалуйста, используйте только латиницу, кириллицу, пробел или дефис"
+          : e.target.validationMessage,
+    });
     setIsValid(e.target.closest("form").checkValidity());
   };
 

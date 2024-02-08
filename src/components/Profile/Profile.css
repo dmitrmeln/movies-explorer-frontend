@@ -56,6 +56,7 @@
 
 .profile__input:focus {
   outline: none;
+  caret-color: white;
 }
 
 .profile__input:-webkit-autofill,
@@ -68,12 +69,27 @@
 
 .profile__error {
   display: flex;
-  min-height: 14px;
-  margin: 189px 0 0;
+  min-height: 28px;
+  margin: 0 0 16px;
   color: #EE3465;
   font-size: 11px;
   font-weight: 400;
   line-height: normal;
+}
+
+.profile__value-error {
+  margin: 131px 0 16px;
+  width: 100%;
+  display: flex;
+  min-height: 14px;
+  color: #EE3465;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.profile__success-message {
+  color: green;
 }
 
 .profile__buttons {
@@ -141,8 +157,8 @@
     margin-top: 96px;
   }
 
-  .profile__error {
-    margin: 179px 0 0;
+  .profile__value-error {
+    margin: 121px 0 16px;
   }
 }
 
@@ -156,8 +172,8 @@
     width: 260px;
   }
 
-  .profile__error {
-    margin: 348px 0 0;
+  .profile__value-error {
+    margin: 290px 0 16px;
   }
 
   .profile__button {
