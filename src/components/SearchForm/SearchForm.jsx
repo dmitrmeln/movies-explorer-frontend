@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 
 function SearchForm(props) {
   const [searchValue, setSearchValue] = useState("");
+  const [valueAfterSearch, setValueAfterSearch] = useState("");
   const [isShortFilm, setIsShortFilm] = useState(false);
   const [searchPlaceHolder, setSearchPlaceHolder] = useState("Фильм");
   const [errorState, setErrorState] = useState(false);
@@ -31,9 +32,9 @@ function SearchForm(props) {
   const handleCheckboxChange = () => {
     setIsShortFilm(!isShortFilm);
 
-    if (searchValue) {
+    if (savedSearchValue) {
       props.handleSearch({
-        name: searchValue,
+        name: savedSearchValue.name ? savedSearchValue.name : valueAfterSearch,
         durationFilter: !isShortFilm ? true : false,
       });
     }
@@ -41,6 +42,7 @@ function SearchForm(props) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    setValueAfterSearch(searchValue);
 
     if (!searchValue) {
       setErrorState(true);
