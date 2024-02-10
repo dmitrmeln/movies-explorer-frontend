@@ -118,7 +118,7 @@ export default function Profile(props) {
             <button
               type="submit"
               className={
-                props.isSubmitting ||
+                !props.isSubmitting ||
                 (isValid &&
                   !props.errorMessage &&
                   (values.name !== currentUser.name ||
@@ -127,7 +127,7 @@ export default function Profile(props) {
                   : "profile__submit-btn profile__submit-btn_disabled"
               }
               disabled={
-                props.isSubmitting ||
+                !props.isSubmitting ||
                 (isValid &&
                   !props.errorMessage &&
                   (values.name !== currentUser.name ||

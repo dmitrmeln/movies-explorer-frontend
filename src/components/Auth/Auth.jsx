@@ -116,9 +116,9 @@ export default function Auth(props) {
           <button
             type="submit"
             className={
-              props.isSubmitting || isValid ? "auth__button" : "auth__button auth__button_disabled"
+              !props.isSubmitting || isValid ? "auth__button" : "auth__button auth__button_disabled"
             }
-            disabled={props.isSubmitting || isValid ? false : true}
+            disabled={!props.isSubmitting || isValid ? false : true}
           >
             {props.submitButtonName}
           </button>
