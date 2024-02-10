@@ -216,7 +216,6 @@ function App() {
     return Auth.register(name, email, password)
       .then(() => {
         handleLogin({ email, password });
-        setSubmittingState(false);
       })
       .catch((error) => {
         console.log(error.message);
