@@ -221,6 +221,7 @@ function App() {
       .catch((error) => {
         console.log(error.message);
         setErrorMessage(error.message);
+        setSubmittingState(false);
         setTimeout(() => {
           setErrorMessage("");
         }, 1500);
@@ -238,6 +239,7 @@ function App() {
       .catch((error) => {
         console.log(error.message);
         setErrorMessage(error.message);
+        setSubmittingState(false);
         setTimeout(() => {
           setErrorMessage("");
         }, 1500);
@@ -258,6 +260,7 @@ function App() {
       })
       .catch((error) => {
         setErrorMessage(error.message);
+        setSubmittingState(false);
         setTimeout(() => {
           setErrorMessage("");
         }, 1500);
