@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { BEAT_FILM_MOVIES_API_URL } from "../../utils/config";
 
 export default function MoviesCard({ movie, onMovieLike, onMovieDelete }) {
-  const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
   const [likeState, setLikeState] = useState(false);
   const usePathname = () => {
     const location = useLocation();
@@ -13,6 +12,8 @@ export default function MoviesCard({ movie, onMovieLike, onMovieDelete }) {
   const currentPath = usePathname();
 
   useEffect(() => {
+    const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
+
     if (likedMovies) {
       const isLiked = likedMovies.some((i) => i.movieId === movie.id);
       setLikeState(isLiked);
@@ -20,22 +21,24 @@ export default function MoviesCard({ movie, onMovieLike, onMovieDelete }) {
   }, []);
 
   function handleLikeClick() {
-    if (!likeState) {
-      setLikeState(true);
-    } else {
-      setLikeState(false);
-    }
-
-    onMovieLike(movie);
+    onMovieLike(movie)
+      .then((res) => {
+        if (!res) {
+          setLikeState(!likeState);
+        }
+      });
   }
 
   function handleMovieDelete() {
-    if (!likeState) {
-      setLikeState(true);
-    } else {
-      setLikeState(false);
-    }
-    onMovieDelete(movie);
+    onMovieDelete(movie)
+      .then((res) => {
+        if (!res) {
+          setLikeState(!likeState);
+        }
+      })
+      .catch((error) => {
+        console.error("An error occurred while processing onMovieLike:", error);
+      });
   }
 
   function handleMovieClick() {

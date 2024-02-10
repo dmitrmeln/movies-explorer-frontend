@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormAndValidation } from "../../hooks/useFormAndValidation";
 import { Link, useLocation } from "react-router-dom";
 import headerLogo from "../../images/logo.svg";
@@ -6,6 +6,8 @@ import headerLogo from "../../images/logo.svg";
 export default function Auth(props) {
   const { values, handleChange, errors, isValid, setValues, resetForm } =
     useFormAndValidation();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const usePathname = () => {
     const location = useLocation();
@@ -20,22 +22,32 @@ export default function Auth(props) {
   }, []);
 
   function handleRegister(evt) {
-    evt.preventDefault(evt);
+    evt.preventDefault();
+    setIsSubmitting(true);
 
-    props.onSubmit({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
+    props
+      .onSubmit({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      })
+      .then(() => {
+        setIsSubmitting(false);
+      });
   }
 
   function handleLogin(evt) {
-    evt.preventDefault(evt);
+    evt.preventDefault();
+    setIsSubmitting(true);
 
-    props.onSubmit({
-      email: values.email,
-      password: values.password,
-    });
+    props
+      .onSubmit({
+        email: values.email,
+        password: values.password,
+      })
+      .then(() => {
+        setIsSubmitting(false);
+      });
   }
 
   return (
@@ -78,6 +90,7 @@ export default function Auth(props) {
           </label>
           <input
             type="email"
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             value={values.email || ""}
             onChange={handleChange}
             className="auth__input"
@@ -119,7 +132,7 @@ export default function Auth(props) {
             className={
               isValid ? "auth__button" : "auth__button auth__button_disabled"
             }
-            disabled={isValid ? false : true}
+            disabled={!isSubmitting || isValid ? false : true}
           >
             {props.submitButtonName}
           </button>

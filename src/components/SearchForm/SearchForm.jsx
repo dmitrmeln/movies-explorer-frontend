@@ -32,9 +32,23 @@ function SearchForm(props) {
   const handleCheckboxChange = () => {
     setIsShortFilm(!isShortFilm);
 
-    if (savedSearchValue) {
+    if (searchValue) {
+      props.handleSearch({
+        name: searchValue,
+        durationFilter: !isShortFilm ? true : false,
+      });
+    }
+
+    if (savedSearchValue && currentPath === '/movies') {
       props.handleSearch({
         name: savedSearchValue.name ? savedSearchValue.name : valueAfterSearch,
+        durationFilter: !isShortFilm ? true : false,
+      });
+    }
+
+    if (savedSearchValue && currentPath === '/saved-movies') {
+      props.handleSearch({
+        name: searchValue? searchValue : valueAfterSearch,
         durationFilter: !isShortFilm ? true : false,
       });
     }

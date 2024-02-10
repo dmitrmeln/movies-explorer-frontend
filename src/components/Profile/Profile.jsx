@@ -10,6 +10,7 @@ export default function Profile(props) {
     useFormAndValidation();
 
   const [isOnEdit, setIsOnEdit] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setValues(currentUser);
@@ -18,15 +19,19 @@ export default function Profile(props) {
   function handleSubmit(evt) {
     evt.preventDefault();
     const delay = 1500;
+    setIsSubmitting(true);
 
-    props.onUpdateUser({
-      name: values.name,
-      email: values.email,
-    });
-
-    setTimeout(() => {
-      setIsOnEdit(false);
-    }, delay);
+    props
+      .onUpdateUser({
+        name: values.name,
+        email: values.email,
+      })
+      .then(() => {
+        setIsSubmitting(false);
+        setTimeout(() => {
+          setIsOnEdit(false);
+        }, delay);
+      });
   }
 
   function handleEditClick() {
@@ -70,6 +75,7 @@ export default function Profile(props) {
           </label>
           <input
             type="email"
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             value={values.email || ""}
             onChange={handleChange}
             className="profile__input"
@@ -127,10 +133,11 @@ export default function Profile(props) {
                   : "profile__submit-btn profile__submit-btn_disabled"
               }
               disabled={
-                isValid &&
-                !props.errorMessage &&
-                (values.name !== currentUser.name ||
-                  values.email !== currentUser.email)
+                isSubmitting ||
+                (isValid &&
+                  !props.errorMessage &&
+                  (values.name !== currentUser.name ||
+                    values.email !== currentUser.email))
                   ? false
                   : true
               }

@@ -10,13 +10,26 @@ export function useFormAndValidation() {
     setValues({ ...values, [name]: value });
     setErrors({
       ...errors,
-      [name]:
-        e.target.validationMessage === "Введите данные в указанном формате."
-          ? "Пожалуйста, используйте только латиницу, кириллицу, пробел или дефис"
-          : e.target.validationMessage,
+      [name]: setErrorMessage(e.target),
     });
     setIsValid(e.target.closest("form").checkValidity());
   };
+
+  function setErrorMessage(target) {
+    if (
+      target.name === "name" &&
+      target.validationMessage === "Введите данные в указанном формате."
+    ) {
+      return "Пожалуйста, используйте только латиницу, кириллицу, пробел или дефис";
+    } else if (
+      target.name === "email" &&
+      target.validationMessage === "Введите данные в указанном формате."
+    ) {
+      return "Введите корректный адрес электронной почты";
+    } else {
+      return target.validationMessage;
+    }
+  }
 
   const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {

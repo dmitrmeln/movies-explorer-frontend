@@ -2,7 +2,7 @@ import Auth from "../Auth/Auth";
 
 export default function Register(props) {
   function handleSubmit({name, email, password}) {
-    props.onSubmit({name, email, password})
+    return props.onSubmit({name, email, password})
   }
 
   return (

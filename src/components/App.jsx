@@ -16,6 +16,11 @@ import * as Auth from "../utils/Auth";
 import { mainApi } from "../utils/MainApi";
 import { moviesApi } from "../utils/MoviesApi";
 import Cookies from "js-cookie";
+import {
+  NOT_FOUND_MESSAGE,
+  PROFILE_CHANGE_MESSAGE,
+  SERVER_ERROR_MESSAGE,
+} from "../utils/config";
 
 function App() {
   const [isMenuPopupOpen, setMenuPopupState] = useState(false);
@@ -34,6 +39,9 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const renderedMovies = savedSearchedMovies.slice(0, cardsToShow);
+  const [isPageOpen, setPageState] = useState(false);
+  const [isPageApproved, setPageApprovedState] = useState(false);
+
   let resizeTimeout;
   const navigate = useNavigate();
 
@@ -44,13 +52,17 @@ function App() {
 
   const currentPath = usePathname();
 
+  const approvedPages = ["/", "/movies", "/saved-movies", "/profile", "/signin", "/signup"];
+  const isApproved = approvedPages.some((path) => path === currentPath);
+
+
   useEffect(() => {
     const jwt = Cookies.get("jwt");
     auth(jwt);
   }, [loggedIn]);
 
   useEffect(() => {
-    if (loggedIn === true) {
+    if (loggedIn === true && isApproved) {
       mainApi
         .getUserInfo()
         .then((result) => {
@@ -99,27 +111,37 @@ function App() {
   }, []);
 
   useEffect(() => {
+    setPageState(false);
+    const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
+
+    if (currentPath === '/saved-movies' && likedMovies) {
+      setSearchedLikedMovies(likedMovies);
+      setPageState(true);
+    }
+  }, [isPageOpen, currentPath]);
+
+  useEffect(() => {
     const savedFilteredMovies = JSON.parse(
       localStorage.getItem("filtered-movies")
     );
     if (savedFilteredMovies) {
       if (savedFilteredMovies.length === 0 && !isLoading) {
-        setSearchResultText("Ничего не найдено");
+        setSearchResultText(NOT_FOUND_MESSAGE);
       } else {
         setSearchResultText("");
       }
     } else if (!savedFilteredMovies && !isLoading) {
-      setSearchResultText("Ничего не найдено");
+      setSearchResultText(NOT_FOUND_MESSAGE);
     }
   }, [renderedMovies, isLoading]);
 
   useEffect(() => {
-    if (likedMovies.length === 0 && !isLoading) {
-      setLikedMoviesResultText("Ничего не найдено");
+    if (searchedLikedMovies.length === 0 && !isLoading) {
+      setLikedMoviesResultText(NOT_FOUND_MESSAGE);
     } else {
       setLikedMoviesResultText("");
     }
-  }, [likedMovies, isLoading]);
+  }, [searchedLikedMovies, isLoading]);
 
   useEffect(() => {
     handleScreenSizeRender();
@@ -143,12 +165,12 @@ function App() {
   }, []);
 
   function auth(jwt) {
-    if (jwt) {
+    if (jwt && isApproved) {
       return Auth.tokenCheck(jwt)
         .then(() => {
           setloggedIn(true);
           currentPath === "/signup" || currentPath === "/signin"
-            ? navigate("/movies")
+            ? navigate("/movies", { replace: true })
             : navigate(currentPath);
         })
         .catch((error) => {
@@ -174,6 +196,7 @@ function App() {
       localStorageKeys.forEach((key) => localStorage.removeItem(key));
       setApiSearchedMovies([]);
       setSavedSearchedMovies([]);
+      setSearchedLikedMovies([]);
       setLikedMovies([]);
       setSearchResultText("");
       navigate("/");
@@ -216,7 +239,7 @@ function App() {
       .setUserInfo(data)
       .then((result) => {
         setCurrentUser(result);
-        setSuccessMessage("Вы успешно изменили профиль!");
+        setSuccessMessage(PROFILE_CHANGE_MESSAGE);
         setTimeout(() => {
           setSuccessMessage("");
         }, 1500);
@@ -269,9 +292,7 @@ function App() {
         })
         .catch((error) => {
           console.log(error);
-          setSearchResultText(
-            "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз."
-          );
+          setSearchResultText(SERVER_ERROR_MESSAGE);
         })
         .finally(() => {
           setIsLoading(false);
@@ -294,18 +315,95 @@ function App() {
   }
 
   function handleLikedMoviesSearch(data) {
-    setLikedMovies([]);
+    setSearchedLikedMovies([]);
     setLikedMoviesResultText("");
     const filteredMovies = filterMovies(
       data,
-      searchedLikedMovies,
+      likedMovies,
       data.durationFilter
     );
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setLikedMovies(filteredMovies);
+      setSearchedLikedMovies(filteredMovies);
     }, 500);
+  }
+
+  function handleMovieLike(data) {
+    const isMovieLiked = likedMovies.some((movie) => movie.movieId === data.id);
+
+    if (isMovieLiked) {
+      handleMovieDelete(data);
+    } else {
+      return mainApi
+        .createMovie(data)
+        .then((newMovie) => {
+          const updatedLikedMovies = [newMovie, ...likedMovies];
+          setLikedMovies(updatedLikedMovies);
+          setSearchedLikedMovies(updatedLikedMovies);
+          localStorage.setItem(
+            "liked-movies",
+            JSON.stringify(updatedLikedMovies)
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          return error;
+        });
+    }
+  }
+
+  function handleMovieDelete(data) {
+    const movieId = data.id ? data.id : data.movieId;
+    return mainApi
+      .deleteMovie(movieId)
+      .then(() => {
+        const updatedLikedMovies = likedMovies.filter(
+          (m) => m.movieId !== movieId
+        );
+
+        const updatedSearchedLikedMovies = searchedLikedMovies.filter(
+          (m) => m.movieId !== movieId
+        );
+        setLikedMovies(updatedLikedMovies);
+        setSearchedLikedMovies(updatedSearchedLikedMovies);
+        localStorage.setItem(
+          "liked-movies",
+          JSON.stringify(updatedLikedMovies)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+  }
+
+  function getLikedMovies() {
+    const likedMovies = localStorage.getItem("liked-movies");
+
+    if (likedMovies) {
+      return mainApi
+        .getLikedMovies()
+        .then((res) => {
+          setLikedMovies(res.reverse());
+          setSearchedLikedMovies(res.reverse());
+          localStorage.setItem("liked-movies", JSON.stringify(res.reverse()));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
+
+  function deleteAllLikedMovies() {
+    const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
+    if (likedMovies) {
+      likedMovies.forEach((movie) => {
+        mainApi.deleteMovie(movie.movieId).catch((error) => {
+          console.log(error);
+        });
+      });
+    }
   }
 
   function filterMovies(value, movies, durationFilter) {
@@ -357,85 +455,13 @@ function App() {
     }
   }
 
-  function handleMovieLike(data) {
-    const isMovieLiked = likedMovies.some((movie) => movie.movieId === data.id);
-
-    if (isMovieLiked) {
-      handleMovieDelete(data);
-    } else {
-      mainApi
-        .createMovie(data)
-        .then((newMovie) => {
-          const updatedLikedMovies = [newMovie, ...likedMovies];
-          setLikedMovies(updatedLikedMovies);
-          setSearchedLikedMovies(updatedLikedMovies);
-          localStorage.setItem(
-            "liked-movies",
-            JSON.stringify(updatedLikedMovies)
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }
-
-  function handleMovieDelete(data) {
-    const movieId = data.id ? data.id : data.movieId;
-
-    mainApi
-      .deleteMovie(movieId)
-      .then(() => {
-        const updatedLikedMovies = likedMovies.filter(
-          (m) => m.movieId !== movieId
-        );
-        setLikedMovies(updatedLikedMovies);
-        setSearchedLikedMovies(updatedLikedMovies);
-        localStorage.setItem(
-          "liked-movies",
-          JSON.stringify(updatedLikedMovies)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  function getLikedMovies() {
-    const likedMovies = localStorage.getItem("liked-movies");
-
-    if (likedMovies) {
-      mainApi
-        .getLikedMovies()
-        .then((res) => {
-          setLikedMovies(res.reverse());
-          setSearchedLikedMovies(res.reverse());
-          localStorage.setItem("liked-movies", JSON.stringify(res.reverse()));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }
-
-  function deleteAllLikedMovies() {
-    const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
-    if (likedMovies) {
-      likedMovies.forEach((movie) => {
-        mainApi.deleteMovie(movie.movieId).catch((error) => {
-          console.log(error);
-        });
-      });
-    }
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header onBurgerMenuClick={handleBurgerMenuClick} loggedIn={loggedIn} />
         <main className="page__content">
           <Routes>
-            <Route path="*" element={<ErrorPage />} />
+            <Route path="*" element={<ErrorPage loggedIn={loggedIn}/>} />
             <Route path="/" element={<Main loggedIn={loggedIn} />} />
             <Route
               path="/movies"
@@ -464,7 +490,8 @@ function App() {
                   searchResultText={likedMoviesResultText}
                   isLoading={isLoading}
                   handleSearch={handleLikedMoviesSearch}
-                  movies={likedMovies}
+                  // movies={likedMovies}
+                  movies={searchedLikedMovies}
                 />
               }
             />
