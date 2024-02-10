@@ -14,6 +14,7 @@ export default function Register(props) {
       linkTo="/signup"
       onSubmit={handleSubmit}
       errorMessage={props.errorMessage}
+      isSubmitting={props.isSubmitting}
     />
   );
 }

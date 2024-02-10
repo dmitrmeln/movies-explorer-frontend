@@ -40,7 +40,7 @@ function App() {
   const [successMessage, setSuccessMessage] = useState("");
   const renderedMovies = savedSearchedMovies.slice(0, cardsToShow);
   const [isPageOpen, setPageState] = useState(false);
-  const [isPageApproved, setPageApprovedState] = useState(false);
+  const [isSubmitting, setSubmittingState] = useState(false);
 
   let resizeTimeout;
   const navigate = useNavigate();
@@ -52,9 +52,15 @@ function App() {
 
   const currentPath = usePathname();
 
-  const approvedPages = ["/", "/movies", "/saved-movies", "/profile", "/signin", "/signup"];
+  const approvedPages = [
+    "/",
+    "/movies",
+    "/saved-movies",
+    "/profile",
+    "/signin",
+    "/signup",
+  ];
   const isApproved = approvedPages.some((path) => path === currentPath);
-
 
   useEffect(() => {
     const jwt = Cookies.get("jwt");
@@ -114,7 +120,7 @@ function App() {
     setPageState(false);
     const likedMovies = JSON.parse(localStorage.getItem("liked-movies"));
 
-    if (currentPath === '/saved-movies' && likedMovies) {
+    if (currentPath === "/saved-movies" && likedMovies) {
       setSearchedLikedMovies(likedMovies);
       setPageState(true);
     }
@@ -206,9 +212,11 @@ function App() {
   }
 
   function handleRegister({ name, email, password }) {
+    setSubmittingState(true);
     return Auth.register(name, email, password)
       .then(() => {
         handleLogin({ email, password });
+        setSubmittingState(false);
       })
       .catch((error) => {
         console.log(error.message);
@@ -220,10 +228,12 @@ function App() {
   }
 
   function handleLogin({ email, password }) {
+    setSubmittingState(true);
     return Auth.login(email, password)
       .then((res) => {
         Cookies.set("jwt", res.token, { expires: 7 });
         setloggedIn(true);
+        setSubmittingState(false);
       })
       .catch((error) => {
         console.log(error.message);
@@ -235,10 +245,12 @@ function App() {
   }
 
   function handleUpdateUser(data) {
+    setSubmittingState(true);
     return mainApi
       .setUserInfo(data)
       .then((result) => {
         setCurrentUser(result);
+        setSubmittingState(false);
         setSuccessMessage(PROFILE_CHANGE_MESSAGE);
         setTimeout(() => {
           setSuccessMessage("");
@@ -317,11 +329,7 @@ function App() {
   function handleLikedMoviesSearch(data) {
     setSearchedLikedMovies([]);
     setLikedMoviesResultText("");
-    const filteredMovies = filterMovies(
-      data,
-      likedMovies,
-      data.durationFilter
-    );
+    const filteredMovies = filterMovies(data, likedMovies, data.durationFilter);
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -461,7 +469,7 @@ function App() {
         <Header onBurgerMenuClick={handleBurgerMenuClick} loggedIn={loggedIn} />
         <main className="page__content">
           <Routes>
-            <Route path="*" element={<ErrorPage loggedIn={loggedIn}/>} />
+            <Route path="*" element={<ErrorPage loggedIn={loggedIn} />} />
             <Route path="/" element={<Main loggedIn={loggedIn} />} />
             <Route
               path="/movies"
@@ -505,6 +513,7 @@ function App() {
                   onUpdateUser={handleUpdateUser}
                   onSignOutClick={handleSignOut}
                   successMessage={successMessage}
+                  isSubmitting={isSubmitting}
                 />
               }
             />
@@ -514,13 +523,18 @@ function App() {
                 <Register
                   onSubmit={handleRegister}
                   errorMessage={errorMessage}
+                  isSubmitting={isSubmitting}
                 />
               }
             />
             <Route
               path="/signin"
               element={
-                <Login onSubmit={handleLogin} errorMessage={errorMessage} />
+                <Login
+                  onSubmit={handleLogin}
+                  errorMessage={errorMessage}
+                  isSubmitting={isSubmitting}
+                />
               }
             />
           </Routes>

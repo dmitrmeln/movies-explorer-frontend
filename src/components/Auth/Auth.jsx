@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useFormAndValidation } from "../../hooks/useFormAndValidation";
 import { Link, useLocation } from "react-router-dom";
 import headerLogo from "../../images/logo.svg";
@@ -6,8 +6,6 @@ import headerLogo from "../../images/logo.svg";
 export default function Auth(props) {
   const { values, handleChange, errors, isValid, setValues, resetForm } =
     useFormAndValidation();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const usePathname = () => {
     const location = useLocation();
@@ -23,31 +21,19 @@ export default function Auth(props) {
 
   function handleRegister(evt) {
     evt.preventDefault();
-    setIsSubmitting(true);
-
-    props
-      .onSubmit({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      })
-      .then(() => {
-        setIsSubmitting(false);
-      });
+    props.onSubmit({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
   }
 
   function handleLogin(evt) {
     evt.preventDefault();
-    setIsSubmitting(true);
-
-    props
-      .onSubmit({
-        email: values.email,
-        password: values.password,
-      })
-      .then(() => {
-        setIsSubmitting(false);
-      });
+    props.onSubmit({
+      email: values.email,
+      password: values.password,
+    });
   }
 
   return (
@@ -130,9 +116,9 @@ export default function Auth(props) {
           <button
             type="submit"
             className={
-              isValid ? "auth__button" : "auth__button auth__button_disabled"
+              props.isSubmitting || isValid ? "auth__button" : "auth__button auth__button_disabled"
             }
-            disabled={!isSubmitting || isValid ? false : true}
+            disabled={props.isSubmitting || isValid ? false : true}
           >
             {props.submitButtonName}
           </button>

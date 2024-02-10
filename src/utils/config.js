@@ -1,4 +1,5 @@
 const {
+  // REACT_APP_API_URL='http://localhost:3000/',
   REACT_APP_API_URL='https://api.movies-dip.nomoredomainsmonster.ru/',
   BEAT_FILM_MOVIES_API_URL = "https://api.nomoreparties.co/",
   NOT_FOUND_MESSAGE = "Ничего не найдено",
