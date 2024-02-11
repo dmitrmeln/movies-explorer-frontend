@@ -1,13 +1,21 @@
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
-// import Preloader from "../Preloader/Preloader";
 
-function Movies() {
+function Movies(props) {
   return (
     <>
-      <SearchForm></SearchForm>
-      {/* <Preloader></Preloader> */}
-      <MoviesCardList></MoviesCardList>
+      <SearchForm
+        handleSearch={props.handleSearch}
+      ></SearchForm>
+      <MoviesCardList
+        searchResultText={props.searchResultText}
+        onMovieLike={props.onMovieLike}
+        onMovieDelete={props.onMovieDelete}
+        moreBtnActive={props.moreBtnActive}
+        onMoreBtnClick={props.onMoreBtnClick}
+        isLoading={props.isLoading}
+        moviesList={props.movies}
+      ></MoviesCardList>
     </>
   );
 }

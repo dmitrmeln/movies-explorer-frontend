@@ -1,7 +1,8 @@
 import MoviesCard from "../MoviesCard/MoviesCard";
 import { useLocation } from "react-router-dom";
+import Preloader from "../Preloader/Preloader";
 
-function MoviesCardList() {
+function MoviesCardList(props) {
   const usePathname = () => {
     const location = useLocation();
     return location.pathname;
@@ -9,62 +10,61 @@ function MoviesCardList() {
 
   const currentPath = usePathname();
 
-  function handleMoreMoviesClick(evt) {
-    // evt.preventDefault();
-    // props.onSearchClick({
-    //   name: searchValue
-    // });
+  function handleMoreMoviesClick() {
+    props.onMoreBtnClick();
   }
 
   return (
     <section className="movies-cardlist">
       <div className="movies-cardlist__container">
-        {/* {cards.map((item) => (
-        <Card
-          key={item._id}
-          card={item}
-          onCardClick={onCardClick}
-          onCardLike={onCardLike}
-          onCardDelete={onCardDelete}
-        />
-      ))} */}
         {currentPath === "/movies" && (
           <>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
+            {props.moviesList.map((item) => (
+              <MoviesCard
+                key={item.id}
+                movie={item}
+                onMovieLike={props.onMovieLike}
+                onMovieDelete={props.onMovieDelete}
+              />
+            ))}
           </>
         )}
         {currentPath === "/saved-movies" && (
           <>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
-            <MoviesCard></MoviesCard>
+            {props.moviesList.map((item) => (
+              <MoviesCard
+                key={item.movieId}
+                movie={item}
+                onMovieLike={props.onMovieLike}
+                onMovieDelete={props.onMovieDelete}
+              />
+            ))}
           </>
         )}
       </div>
-      {currentPath === "/movies" && (
+      <Preloader isLoading={props.isLoading}></Preloader>
+      <>
+        <p
+          className={
+            currentPath === "/movies" || !props.searchResultText
+              ? "movies-cardlist__search-text"
+              : "movies-cardlist__search-text movies-cardlist__search-text_padding"
+          }
+        >
+          {props.searchResultText}
+        </p>
         <button
           type="button"
-          className="movies-cardlist__morebtn"
+          className={
+            props.moreBtnActive
+              ? "movies-cardlist__morebtn movies-cardlist__morebtn_active"
+              : "movies-cardlist__morebtn"
+          }
           onClick={handleMoreMoviesClick}
         >
           Ещё
         </button>
-      )}
+      </>
       {currentPath === "/saved-movies" && (
         <div className="movies-cardlist__blank"></div>
       )}

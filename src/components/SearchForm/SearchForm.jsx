@@ -1,31 +1,77 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import searchIcon from "../../images/search-form-icon.svg";
+import { useLocation } from "react-router-dom";
 
 function SearchForm(props) {
   const [searchValue, setSearchValue] = useState("");
+  const [valueAfterSearch, setValueAfterSearch] = useState("");
   const [isShortFilm, setIsShortFilm] = useState(false);
+  const [searchPlaceHolder, setSearchPlaceHolder] = useState("Фильм");
+  const [errorState, setErrorState] = useState(false);
+
+  const usePathname = () => {
+    const location = useLocation();
+    return location.pathname;
+  };
+
+  const currentPath = usePathname();
+  const savedSearchValue = JSON.parse(localStorage.getItem("search-value"));
 
   const handleChange = (e) => {
     setSearchValue(e.target.value);
   };
 
+  useEffect(() => {
+    if (currentPath === "/movies" && savedSearchValue) {
+      setSearchValue(savedSearchValue.name);
+      setIsShortFilm(savedSearchValue.durationFilter);
+    }
+  }, []);
+
   const handleCheckboxChange = () => {
     setIsShortFilm(!isShortFilm);
 
-    // if (isShortFilm === true) {
-    //   props.onCheckboxClick();
-    // } else {
-    //   props.onCheckboxUnclick()
-    // }
+    if (searchValue) {
+      props.handleSearch({
+        name: searchValue,
+        durationFilter: !isShortFilm ? true : false,
+      });
+    }
+
+    if (savedSearchValue && currentPath === '/movies') {
+      props.handleSearch({
+        name: savedSearchValue.name ? savedSearchValue.name : valueAfterSearch,
+        durationFilter: !isShortFilm ? true : false,
+      });
+    }
+
+    if (savedSearchValue && currentPath === '/saved-movies') {
+      props.handleSearch({
+        name: searchValue? searchValue : valueAfterSearch,
+        durationFilter: !isShortFilm ? true : false,
+      });
+    }
   };
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    setValueAfterSearch(searchValue);
 
-    // props.onSearchClick({
-    //   name: searchValue
-    // });
+    if (!searchValue) {
+      setErrorState(true);
+      setSearchPlaceHolder("Нужно ввести ключевое слово");
+      setTimeout(() => {
+        setSearchPlaceHolder("Фильм");
+        setErrorState(false);
+      }, 1000);
+      return;
+    }
+
+    props.handleSearch({
+      name: searchValue,
+      durationFilter: isShortFilm ? true : false,
+    });
   }
 
   return (
@@ -44,9 +90,14 @@ function SearchForm(props) {
           />
           <input
             type="text"
-            placeholder="Фильм"
+            placeholder={searchPlaceHolder}
+            value={searchValue || ""}
             onChange={handleChange}
-            className="search-form__input"
+            className={
+              errorState
+                ? "search-form__input search-form__input-error"
+                : "search-form__input"
+            }
             id="search-form__input"
             name="movie"
             minLength="2"

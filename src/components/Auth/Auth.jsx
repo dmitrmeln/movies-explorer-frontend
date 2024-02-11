@@ -19,13 +19,30 @@ export default function Auth(props) {
     setValues({ name: "", email: "", password: "" });
   }, []);
 
+  function handleRegister(evt) {
+    evt.preventDefault();
+    props.onSubmit({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
+  }
+
+  function handleLogin(evt) {
+    evt.preventDefault();
+    props.onSubmit({
+      email: values.email,
+      password: values.password,
+    });
+  }
+
   return (
     <div className="auth">
       <form
         className="auth__form"
         noValidate
         name="auth-form"
-        onSubmit={props.handleSubmit}
+        onSubmit={currentPath === "/signup" ? handleRegister : handleLogin}
       >
         <Link className="auth__logo-container" to="/">
           <img className="header__logo" src={headerLogo} alt="логотип" />
@@ -39,6 +56,7 @@ export default function Auth(props) {
               </label>
               <input
                 type="text"
+                pattern="^[a-zA-Zа-яА-Я\s\-]*"
                 value={values.name || ""}
                 onChange={handleChange}
                 className="auth__input"
@@ -58,6 +76,7 @@ export default function Auth(props) {
           </label>
           <input
             type="email"
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             value={values.email || ""}
             onChange={handleChange}
             className="auth__input"
@@ -93,12 +112,11 @@ export default function Auth(props) {
             currentPath === "/signup" ? "auth__buttons" : "auth__buttons-login"
           }
         >
+          <span className="auth__error">{props.errorMessage}</span>
           <button
             type="submit"
-            className={
-              isValid ? "auth__button" : "auth__button auth__button_disabled"
-            }
-            disabled={isValid ? false : true}
+            className={`auth__button ${props.isSubmitting || !isValid ? 'auth__button_disabled' : ''}`}
+            disabled={props.isSubmitting || !isValid}
           >
             {props.submitButtonName}
           </button>

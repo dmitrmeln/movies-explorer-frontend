@@ -2,7 +2,7 @@ const checkResponse = (res) => {
   if (res.ok) {
     return res.json();
   }
-  return Promise.reject(`Ошибка ${res.status}`);
+  return Promise.resolve(res.json()).then(data => Promise.reject(data));
 };
 
 export const request = (url, options) => {

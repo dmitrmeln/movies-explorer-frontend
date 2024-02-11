@@ -9,9 +9,12 @@
   object-fit: cover;
   object-position: center;
   width: 270px;
+  cursor: pointer;
 }
 
 .movies-card__container{
+  max-height: 50px;
+  box-sizing: border-box;
   margin-top: 10px;
   display: flex;
   align-items: center;
@@ -23,6 +26,7 @@
 
 .movies-card__heading {
   margin: 0;
+  max-width: 226px;
   font-size: 13px;
   font-weight: 500;
   line-height: normal;
@@ -86,6 +90,10 @@
     width: 339px;
   }
 
+  .movies-card__heading {
+    max-width: 295px;
+  }
+
   .movies-card__image {
     height: 190px;
     width: 339px;
@@ -104,6 +112,7 @@
 
   .movies-card__heading {
     font-size: 12px;
+    max-width: 240px;
   }
 
   .movies-card__duration {
